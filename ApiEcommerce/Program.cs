@@ -1,11 +1,12 @@
+// Este es el punto de entrada para cualquier aplicación en ASP.NET Core.
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer(); // 	Detecta tus endpoints para que se puedan documentar automáticamente
+builder.Services.AddSwaggerGen(); // Genera el archivo Swagger (OpenAPI) y te da la UI para verlo y probar la API
 
 var app = builder.Build();
 
@@ -16,6 +17,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Estos de aquí abajo son middleware que se ejecutan en cada petición HTTP
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
