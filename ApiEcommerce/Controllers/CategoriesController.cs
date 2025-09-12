@@ -34,5 +34,24 @@ namespace ApiEcommerce.Controllers
 
             return Ok(categoriesDto);
         }
+
+        [HttpGet("{id:int}", Name = "GetCategory")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        public IActionResult GetCategory(int id)
+        {
+            var category = _categoryRepository.GetCategory(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var categoryDto = _mapper.Map<CategoryDto>(category);
+
+            return Ok(categoryDto);
+        }
     }
 }
