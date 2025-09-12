@@ -2,7 +2,7 @@ using System;
 
 namespace ApiEcommerce.Models.Dtos;
 
-public class CatgoryDto
+public class CategoryDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
