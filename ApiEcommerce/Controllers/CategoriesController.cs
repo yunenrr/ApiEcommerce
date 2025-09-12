@@ -93,7 +93,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateCategory(int id, [FromBody] CreateCategoryDto updateCategoryDto)
         {
-            if(!_categoryRepository.CategoryExists(id))
+            if (!_categoryRepository.CategoryExists(id))
             {
                 return NotFound($"La categoría con el id {id} no existe.");
             }
@@ -116,6 +116,35 @@ namespace ApiEcommerce.Controllers
             if (!_categoryRepository.UpdateCategory(category))
             {
                 ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {category.Name}.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+        
+        [HttpDelete("{id:int}", Name = "DeleteCategory")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Mal formada la solicitud
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)] // No autenticado
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteCategory(int id)
+        {
+            if(!_categoryRepository.CategoryExists(id))
+            {
+                return NotFound($"La categoría con el id {id} no existe.");
+            }
+
+            var category = _categoryRepository.GetCategory(id);
+
+            if (category == null)
+            {
+                return NotFound($"La categoría con el id {id} no existe.");
+            }
+
+            if (!_categoryRepository.DeleteCategory(category))
+            {
+                ModelState.AddModelError("CustomError", $"Algo salió mal al eliminar el registro {category.Name}.");
                 return StatusCode(500, ModelState);
             }
 
