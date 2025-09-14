@@ -7,6 +7,7 @@ Migrar los modelos a la base de datos
     relaciones basadas en los modelos definidos en el contexto de la base de datos.
     - dotnet ef database update: Aplica la migración más reciente a la base de datos, creando las tablas y relaciones según lo definido en la migración.
     - dotnet ef migrations list: Lista todas las migraciones que se han creado para el proyecto.
+    - dotnet ef migrations remove: Elimina la última migración creada si aún no ha sido aplicada a la base de datos.
 */
 public class ApplicationDbContext : DbContext // DbContext es una clase base para interactuar con la base de datos
 {

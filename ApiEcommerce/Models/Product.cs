@@ -12,6 +12,7 @@ public class Product
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     [Range(0, double.MaxValue)]
+    [Column(TypeName = "decimal(18,2)")] // Define la precisión y escala para el campo decimal en la base de datos
     public decimal Price { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
     [Required]
@@ -23,6 +24,6 @@ public class Product
 
     // Relación con Category
     public int CategoryId { get; set; }
-    [ForeignKey("Id")]
+    [ForeignKey("CategoryId")]
     public required Category Category { get; set; }
 }
