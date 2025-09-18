@@ -114,16 +114,24 @@ public class ProductRepository : IProductRepository
         return _db.SaveChanges() >= 0;  // Devuelve true si se guardaron cambios
     }
 
-    public ICollection<Product> SearchProduct(string name)
+    public ICollection<Product> SearchProducts(string searchTerm)
     {
+        string searchTermLower = searchTerm.ToLower().Trim();
+
         IQueryable<Product> query = _db.Products; // Inicia la consulta con todos los productos.
 
-        if (!string.IsNullOrWhiteSpace(name))
+        if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            query = query.Where(p => p.Name.ToLower().Trim() == name.ToLower().Trim());
+            query = query
+            .Include(p => p.Category) // Incluye la entidad relacionada Category
+            .Where(
+                p => p.Name.ToLower().Trim().Contains(searchTermLower) || 
+                     p.Description.ToLower().Trim().Contains(searchTermLower)
+            );
         }
 
-        return query.OrderBy(p => p.Name).ToList();
+        return query
+        .OrderBy(p => p.Name).ToList();
     }
 
     public bool UpdateProduct(Product product)
