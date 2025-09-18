@@ -130,5 +130,34 @@ namespace ApiEcommerce.Controllers
             return Ok(productsDto);
 
         }
+
+        [HttpPatch("buyProduct/{name}/{quantity:int}", Name = "BuyProduct")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+        public IActionResult BuyProduct(string name, int quantity)
+        {
+            if (string.IsNullOrWhiteSpace(name) || quantity <= 0)
+            {
+                return BadRequest("El nombre del producto o la cantidad no son válidos.");
+            }
+
+            var foundProduct = _productRepository.ProductExists(name);
+            if (!foundProduct)
+            {
+                return NotFound($"El producto con el nombre '{name}' no existe.");
+            }
+
+            if (!_productRepository.BuyProduct(name, quantity))
+            {
+                ModelState.AddModelError("CustomError", $"No se pudo comprar el producto {name} o la cantidad solicitada es mayor al stock disponible.");
+                return BadRequest(ModelState);
+            }
+
+            var units = quantity > 1 ? "unidades" : "unidad";
+
+            return Ok($"Se compró {quantity} {units} del producto '{name}'.");
+        }
     }
 }
