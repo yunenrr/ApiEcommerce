@@ -83,7 +83,10 @@ public class ProductRepository : IProductRepository
             return new List<Product>(); // ID de categoría inválida
         }
 
-        return _db.Products.Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name).ToList();
+        return _db.Products
+        .Include(p => p.Category) // Incluye la entidad relacionada Category
+        .Where(p => p.CategoryId == categoryId)
+        .OrderBy(p => p.Name).ToList();
     }
 
     public bool ProductExists(int id)

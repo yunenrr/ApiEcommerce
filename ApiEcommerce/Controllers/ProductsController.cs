@@ -88,7 +88,27 @@ namespace ApiEcommerce.Controllers
             var createdProduct = _productRepository.GetProduct(product.ProductId);
             var productDto = _mapper.Map<ProductDto>(createdProduct);
 
-            return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
+            return CreatedAtRoute("GetProduct", new { categoryId = product.ProductId }, productDto);
+        }
+
+        [HttpGet("searchByCategory/{categoryId:int}", Name = "GetProductsForCategory")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+        public IActionResult GetProductsForCategory(int categoryId)
+        {
+            var products = _productRepository.GetProductsForCategory(categoryId);
+
+            if (!products.Any())
+            {
+                return NotFound($"Los productos con la categoría {categoryId} no existen.");
+            }
+
+            var productsDto = _mapper.Map<List<ProductDto>>(products);
+
+            return Ok(productsDto);
+
         }
     }
 }
