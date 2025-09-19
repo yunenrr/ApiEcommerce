@@ -19,4 +19,5 @@ public class ApplicationDbContext : DbContext // DbContext es una clase base par
 
     public DbSet<Category> Categories { get; set; } // DbSet representa una colección de entidades que se pueden consultar y guardar en la base de datos
     public DbSet<Product> Products { get; set; }
+    public DbSet<User> Users { get; set; }
 }
