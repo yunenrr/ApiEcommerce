@@ -4,6 +4,7 @@ using ApiEcommerce.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ApiEcommerce.Controllers
 {
@@ -88,7 +89,7 @@ namespace ApiEcommerce.Controllers
             var createdProduct = _productRepository.GetProduct(product.ProductId);
             var productDto = _mapper.Map<ProductDto>(createdProduct);
 
-            return CreatedAtRoute("GetProduct", new { categoryId = product.ProductId }, productDto);
+            return CreatedAtRoute("GetProduct", new { productId = product.ProductId }, productDto);
         }
 
         [HttpGet("searchProductByCategory/{categoryId:int}", Name = "GetProductsForCategory")] // Nombre de la ruta
@@ -193,6 +194,34 @@ namespace ApiEcommerce.Controllers
             if (!_productRepository.UpdateProduct(product))
             {
                 ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {product.Name}.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{productId:int}", Name = "DeleteProduct")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult DeleteProduct(int productId)
+        {
+            if (productId <= 0)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var product = _productRepository.GetProduct(productId);
+
+            if (product == null)
+            {
+                return NotFound($"El producto con el id {productId} no existe.");
+            }
+
+            if (!_productRepository.DeleteProduct(product))
+            {
+                ModelState.AddModelError("CustomError", $"Algo salió mal al eliminar el registro {product.Name}.");
                 return StatusCode(500, ModelState);
             }
 
