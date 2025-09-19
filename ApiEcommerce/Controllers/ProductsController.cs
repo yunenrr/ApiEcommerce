@@ -159,5 +159,44 @@ namespace ApiEcommerce.Controllers
 
             return Ok($"Se compró {quantity} {units} del producto '{name}'.");
         }
+
+        [HttpPut("{productId:int}", Name = "UpdateProduct")] // Nombre de la ruta
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Mal formada la solicitud
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)] // No autenticado
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UpdateProduct(int productId, [FromBody] CreateProductDto updateProductDto)
+        {
+            if (updateProductDto == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_productRepository.ProductExists(productId))
+            {
+                ModelState.AddModelError("CustomError", "El producto ya existe.");
+                return BadRequest(ModelState);
+
+            }
+
+            if (!_categoryRepository.CategoryExists(updateProductDto.CategoryId))
+            {
+                ModelState.AddModelError("CustomError", $"La categoría con el {updateProductDto.CategoryId} no existe.");
+                return BadRequest(ModelState);
+
+            }
+
+            var product = _mapper.Map<Product>(updateProductDto);
+            product.ProductId = productId;
+
+            if (!_productRepository.UpdateProduct(product))
+            {
+                ModelState.AddModelError("CustomError", $"Algo salió mal al actualizar el registro {product.Name}.");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }
