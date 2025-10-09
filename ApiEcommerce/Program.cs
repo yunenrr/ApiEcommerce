@@ -10,6 +10,7 @@ var dbConnectionString = builder.Configuration.GetConnectionString("ConexionSql"
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(); // Inyección de dependencias para CategoryRepository
 builder.Services.AddScoped<IProductRepository, ProductRepository>(); // Inyección de dependencias para ProductRepository
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(cfg => {
     cfg.AddMaps(typeof(Program).Assembly);
 }); // Configuración de AutoMapper para mapear entre entidades y DTOs
