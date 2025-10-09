@@ -75,8 +75,30 @@ namespace ApiEcommerce.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar al usuario.");
             }
-            
+
             return CreatedAtRoute("GetUser", new { id = result.Id }, result);
+        }
+
+        [HttpPost("Login", Name = "LoginUser")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto userLoginDto)
+        {
+            if (userLoginDto == null || !ModelState.IsValid) // Validación de que el objeto no sea nulo y que el modelo sea válido.
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userRepository.Login(userLoginDto);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(user);
         }
     }
 }
