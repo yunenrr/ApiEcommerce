@@ -1,4 +1,5 @@
 // Este es el punto de entrada para cualquier aplicación en ASP.NET Core.
+using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ if (app.Environment.IsDevelopment())
 // Estos de aquí abajo son middleware que se ejecutan en cada petición HTTP
 app.UseHttpsRedirection();
 
-app.UseCors("AllowSpecificOrigin");
+app.UseCors(PolicyNames.AllowSpecificOrigin);
 
 app.UseAuthorization();
 
