@@ -2,6 +2,7 @@ using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -10,6 +11,7 @@ namespace ApiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -26,6 +28,7 @@ namespace ApiEcommerce.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
         [ProducesResponseType(typeof(List<ProductDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public IActionResult GetProducts()
         {
             var products = _productRepository.GetProducts();
@@ -38,6 +41,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
         [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public IActionResult GetProduct(int productId)
         {
             var product = _productRepository.GetProduct(productId);

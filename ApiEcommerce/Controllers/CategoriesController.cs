@@ -9,7 +9,7 @@ namespace ApiEcommerce.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[EnableCors(PolicyNames.AllowSpecificOrigin)]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
@@ -25,6 +25,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         //[EnableCors(PolicyNames.AllowSpecificOrigin)]
+        [AllowAnonymous] // Permite el acceso anónimo a este endpoint
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
@@ -43,6 +44,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
         [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public IActionResult GetCategory(int id)
         {
             var category = _categoryRepository.GetCategory(id);

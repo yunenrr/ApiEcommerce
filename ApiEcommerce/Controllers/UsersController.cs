@@ -1,12 +1,14 @@
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -51,6 +53,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUserDto createUserDto)
         {
             // ¿Qué es ModelState? Es una propiedad del controlador que contiene el estado de la validación del modelo.'
@@ -84,6 +87,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginUser([FromBody] UserLoginDto userLoginDto)
         {
             if (userLoginDto == null || !ModelState.IsValid) // Validación de que el objeto no sea nulo y que el modelo sea válido.
