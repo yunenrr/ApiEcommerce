@@ -6,6 +6,7 @@ using ApiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +51,40 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer(); // 	Detecta tus endpoints para que se puedan documentar automáticamente
-builder.Services.AddSwaggerGen(); // Genera el archivo Swagger (OpenAPI) y te da la UI para verlo y probar la API
+
+// Genera el archivo Swagger (OpenAPI) y te da la UI para verlo y probar la API
+builder.Services.AddSwaggerGen(
+    options =>
+    {
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "Nuestra API utiliza la Autenticación JWT usando el esquema Bearer. \n\r\n\r" +
+                          "Ingrese la palabra a continuación el token generado en logun.\n\r\n\r" +
+                          "Ejemplo: \"12345abcdef\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer"
+        });
+        options.AddSecurityRequirement( new OpenApiSecurityRequirement()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header
+                },
+                new List<string>()
+            }
+        });
+    }
+); 
 
 builder.Services.AddCors(options =>
 {
