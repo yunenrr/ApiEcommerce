@@ -40,7 +40,8 @@ namespace ApiEcommerce.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")] // Nombre de la ruta
-        [ResponseCache(Duration = 10)] // La respuesta de este endpoint se almacenará en caché durante 10 segundos
+        //[ResponseCache(Duration = 10)] // La respuesta de este endpoint se almacenará en caché durante 10 segundos
+        [ResponseCache(CacheProfileName = "Default10")] // Usando el perfil de caché definido en Program.cs
         [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
         [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
