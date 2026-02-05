@@ -40,6 +40,7 @@ namespace ApiEcommerce.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")] // Nombre de la ruta
+        [ResponseCache(Duration = 10)] // La respuesta de este endpoint se almacenará en caché durante 10 segundos
         [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // El usuario envió una petición incorrecta
         [ProducesResponseType(StatusCodes.Status404NotFound)] // No se encontró el recurso
@@ -47,8 +48,9 @@ namespace ApiEcommerce.Controllers
         [AllowAnonymous]
         public IActionResult GetCategory(int id)
         {
+            Console.WriteLine($"Categoría con el ID: {id} a las {DateTime.Now}.");
             var category = _categoryRepository.GetCategory(id);
-
+            Console.WriteLine($"Respuesta con el ID: {id}.");
             if (category == null)
             {
                 return NotFound($"La categoría con el id {id} no existe.");

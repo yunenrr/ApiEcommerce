@@ -13,6 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var dbConnectionString = builder.Configuration.GetConnectionString("ConexionSql");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnectionString));
+
+// Se configura el servicio de caché
+
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024; // Tamaño máximo del cuerpo en bytes para almacenar en caché
+    options.UseCaseSensitivePaths = true; // Las rutas serán sensibles a mayúsculas y minúsculas
+});
+
+// Se realiza la inyección de dependencias para los repositorios
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(); // Inyección de dependencias para CategoryRepository
 builder.Services.AddScoped<IProductRepository, ProductRepository>(); // Inyección de dependencias para ProductRepository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -59,7 +69,7 @@ builder.Services.AddSwaggerGen(
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = "Nuestra API utiliza la Autenticación JWT usando el esquema Bearer. \n\r\n\r" +
-                          "Ingrese la palabra a continuación el token generado en logun.\n\r\n\r" +
+                          "Ingrese la palabra a continuación el token generado en login.\n\r\n\r" +
                           "Ejemplo: \"12345abcdef\"",
             Name = "Authorization",
             In = ParameterLocation.Header,
@@ -110,6 +120,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(PolicyNames.AllowSpecificOrigin);
+
+app.UseResponseCaching(); // Habilita el middleware de caché de respuestas
 
 app.UseAuthentication();
 
