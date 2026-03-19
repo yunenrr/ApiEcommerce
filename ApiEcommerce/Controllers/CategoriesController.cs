@@ -1,13 +1,16 @@
 using ApiEcommerce.Constants;
 using ApiEcommerce.Models.Dtos;
 using ApiEcommerce.Repository.IRepository;
+using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiEcommerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
     //[EnableCors(PolicyNames.AllowSpecificOrigin)]
     [Authorize(Roles = "Admin")]
@@ -27,9 +30,29 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         //[EnableCors(PolicyNames.AllowSpecificOrigin)]
         [AllowAnonymous] // Permite el acceso anónimo a este endpoint
+        [MapToApiVersion("1.0")]
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
+            var categoriesDto = new List<CategoryDto>();
+
+            foreach (var category in categories)
+            {
+                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
+            }
+
+            return Ok(categoriesDto);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)] // El usuario no está autorizado para ingresar a este recurso
+        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
+        //[EnableCors(PolicyNames.AllowSpecificOrigin)]
+        [AllowAnonymous] // Permite el acceso anónimo a este endpoint
+        [MapToApiVersion("2.0")]
+        public IActionResult GetCategoriesOrderById()
+        {
+            var categories = _categoryRepository.GetCategories().OrderBy(c => c.Id).ToList();
             var categoriesDto = new List<CategoryDto>();
 
             foreach (var category in categories)
