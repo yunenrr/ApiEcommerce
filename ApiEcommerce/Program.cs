@@ -3,6 +3,7 @@ using System.Text;
 using ApiEcommerce.Constants;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -101,6 +102,20 @@ builder.Services.AddSwaggerGen(
         });
     }
 ); 
+
+var apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true; // Asume la versión predeterminada si no se especifica en la solicitud
+    options.DefaultApiVersion = new ApiVersion(1, 0); // Establece la versión predeterminada de la API
+    options.ReportApiVersions = true; // Agrega encabezados de respuesta con las versiones de API disponibles
+    options.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version")); // Configura cómo se especifica la versión en las solicitudes (query string)
+});
+
+apiVersioningBuilder.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV"; // Formato del nombre del grupo de versiones (ejemplo: v1, v2)
+    options.SubstituteApiVersionInUrl = true; // Sustituye la versión en la URL si se especifica /api/v{version} en las rutas de los controladores
+});
 
 builder.Services.AddCors(options =>
 {
