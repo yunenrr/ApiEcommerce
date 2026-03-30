@@ -29,6 +29,7 @@ namespace ApiEcommerce.Controllers.V1
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         //[EnableCors(PolicyNames.AllowSpecificOrigin)]
         [AllowAnonymous] // Permite el acceso anónimo a este endpoint
+        [Obsolete("Este método está obsoleto. Use GetCategoriesById de la versión 2 en su lugar.")] // Marca el método como obsoleto
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
