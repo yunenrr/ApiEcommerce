@@ -100,6 +100,23 @@ builder.Services.AddSwaggerGen(
                 new List<string>()
             }
         });
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "API Ecommerce",
+            Description = "API para gestionar productos y usuarios.",
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Yunen Ramos",
+                Url = new Uri("https://github.com/yunenrr")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "Licencia de uso",
+                Url = new Uri("https://example.com/license")
+            }
+        });
     }
 ); 
 
