@@ -108,7 +108,7 @@ var apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true; // Asume la versión predeterminada si no se especifica en la solicitud
     options.DefaultApiVersion = new ApiVersion(1, 0); // Establece la versión predeterminada de la API
     options.ReportApiVersions = true; // Agrega encabezados de respuesta con las versiones de API disponibles
-    options.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version")); // Configura cómo se especifica la versión en las solicitudes (query string)
+    //options.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version")); // Configura cómo se especifica la versión en las solicitudes (query string)
 });
 
 apiVersioningBuilder.AddApiExplorer(options =>
